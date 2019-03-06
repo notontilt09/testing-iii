@@ -1,6 +1,6 @@
 // Test away!
 import React from 'react';
-import { render } from 'react-testing-library';
+import { render, fireEvent } from 'react-testing-library';
 import 'jest-dom/extend-expect';
 import 'react-testing-library/cleanup-after-each';
 
@@ -42,6 +42,14 @@ describe('<Controls />', () => {
             const button = getByText(/lock gate/i)
             expect(button).toBeEnabled();
         });
+
+        it('button fires a function if clicked while enabled', () => {
+            const mock = jest.fn();
+            const { getByText } = render(<Controls closed={true} toggleLocked={mock} />);
+            const button = getByText(/lock gate/i);
+            fireEvent.click(button);
+            expect(mock).toHaveBeenCalled();
+        });
     });
     describe('open/close gate button', () => {
         it('initially renders close gate button', () => {
@@ -77,6 +85,14 @@ describe('<Controls />', () => {
             const { getByText } = render(<Controls locked={false}/>)
             const button = getByText(/close gate/i);
             expect(button).toBeEnabled();
+        });
+
+        it('button fires a function if clicked while enabled', () => {
+            const mock = jest.fn();
+            const { getByText } = render(<Controls locked={false} toggleClosed={mock} />)
+            const button = getByText(/close gate/i);
+            fireEvent.click(button);
+            expect(mock).toHaveBeenCalled();
         });
     });
 });
